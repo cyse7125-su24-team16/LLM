@@ -9,7 +9,7 @@ pipeline {
         DOCKER_TAG = 'latest'
         GITHUB_CREDENTIALS_ID = 'github_token'
         GITHUB_REPO = 'cyse7125-su24-team16/project'
-        DOCKER_HUB_REPO = '118a3025/csye_7125'
+        DOCKER_HUB_REPO = '118a3025/csye-7125'
     }
 
     options {
@@ -24,7 +24,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 script {
-                    // Checkout the code
+                    // Checking out the Github Repository code.
                     git credentialsId: GITHUB_CREDENTIALS_ID, url: "https://github.com/${env.GITHUB_REPO}.git", branch: 'main'
                 }
             }
@@ -162,7 +162,7 @@ pipeline {
                             docker buildx inspect mybuilder --bootstrap
                         
                             # Build and push the Flyway migration image
-                            docker buildx build --builder mybuilder -f Dockerfile -t ${DOCKER_HUB_REPO}:streamlit-app-${NEW_VERSION} --platform "linux/arm64,linux/amd64" . --push
+                            docker buildx build --builder mybuilder -f Dockerfile.flyway -t ${DOCKER_HUB_REPO}:streamlit-app-${NEW_VERSION} --platform "linux/arm64,linux/amd64" . --push
 
                             docker system prune -af
                             docker volume prune -f
