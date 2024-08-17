@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cve.fullname" . }}-streamlit-app-deployment
+  labels:
+    app: streamlit-app
+  {{- include "cve.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.streamlitAppDeployment.replicas }}
+  selector:
+    matchLabels:
+      app: streamlit-app
+    {{- include "cve.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app: streamlit-app
+      {{- include "cve.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - env:
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.streamlitAppDeployment.streamlitApp.image.repository }}:{{ .Values.streamlitAppDeployment.streamlitApp.image.tag
+          | default .Chart.AppVersion }}
+        name: streamlit-app
+        ports:
+        - containerPort: 8501
+        resources: {{- toYaml .Values.streamlitAppDeployment.streamlitApp.resources | nindent
+          10 }}
