@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "cve1.fullname" . }}-streamlit-app-service
+  labels:
+  {{- include "cve1.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.streamlitAppService.type }}
+  selector:
+    app: streamlit-app
+  {{- include "cve1.selectorLabels" . | nindent 4 }}
+  ports:
+	{{- .Values.streamlitAppService.ports | toYaml | nindent 2 }}
